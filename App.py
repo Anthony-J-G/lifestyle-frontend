@@ -56,14 +56,14 @@ def show_ledger():
         y = request.args.get('year')
         m = request.args.get('month')
 
-    csv = f"data/ledgers/{y}_{m}.csv" # Parse CSV file from args
+    csv = f"data/private/ledgers/{y}_{m}.csv" # Parse CSV file from args
     df = None
     try:
         df = pd.read_csv(csv)
 
     except FileNotFoundError:
         errormsg = f"File '{csv}' not found in budgets, please try again"
-        return redirect(url_for('index', __error=errormsg))
+        return redirect(url_for('index'), 404)
 
         df = pd.DataFrame(columns=LEDGER_COLS)
         out_df = pd.DataFrame(columns=LEDGER_COLS).set_index('Number')
