@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/style.css">
+    <title>Finances | Ledger</title>
+</head>
+<body>
+    <div>
+        <a href="/">Home</a>
+    </div>
+
+    <br>
+
+    <div>
+        <a href="/ledger">Back</a>
+        <br>
+        <br>
+
+        <form action="/show_ledger" method="post">
+            <input type="hidden" name="year"  value="{{ year }}">
+            <input type="hidden" name="month" value="{{ month }}">
+
+            <label for="trdt">Date:</label>
+            <input type="date" name="trdt" autocomplete="off" required>
+
+            <label for="desc">Description:</label>
+            <input type="text" name="desc" autocomplete="off" maxlen=32 required>
+
+            <label for="category">Category:</label>
+            <input type="text" name="cate" autocomplete="off" maxlen=16 required>
+
+            <label for="amnt">Amount:</label>
+            <input type="number" name="amnt" autocomplete="off" step=0.001 maxlen=16 required>
+        
+            <input type="radio" id="debit" name="dirc" value="1" required>
+            <label for="debit">Debit</label>
+            <input type="radio" id="credit" name="dirc" value="-1" required>
+            <label for="credit">Credit</label><br>
+            <br>
+            <input type="submit" value="Submit">
+        </form>
+        <br>
+        <br>
+        <table>
+            <tr>
+                {% for i in Columns %}
+                    <th>
+                        {{ i }}
+                    </th>
+                {% endfor %}
+            </tr>
+            {% for i in Data %}
+                <tr>
+                    {% for j in i %}
+                        <td>{{ j }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+        
+    </div>
+    
+</body>
+</html>
