@@ -2,7 +2,10 @@ from calendar import month
 from tkinter.tix import COLUMN
 from flask import Flask, render_template, redirect, url_for, request, abort
 import json
+from importlib_metadata import method_cache
 import pandas as pd
+
+from scripts.header import NavBar
 
 
 LEDGER_COLS = ["Number", "Date", "Description", "Category", "Amount"]
@@ -20,18 +23,22 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    nav = NavBar().render()
+
+    return render_template('index.html', nav=nav)
 
 
-@app.route('/ledger', methods=['GET', 'POST'])
-def ledger():
+@app.route('/ledgers', methods=['GET', 'POST'])
+def ledgers():
+    nav = NavBar().render()
+
     # Ask client for the year to search for
     if "year" not in request.args and "month" not in request.args:
-        return render_template('ledger.html', Years=Years, Months=[])
+        return render_template('ledger.html', nav=nav, Years=Years, Months=[])
 
     # If given a year, attempt to ask client for month as well
     if "year" in request.args and "month" not in request.args:
-        return render_template('ledger.html', Years=[], Months=MONTHS, year=request.args.get("year"))
+        return render_template('ledger.html', nav=nav, Years=[], Months=MONTHS, year=request.args.get("year"))
 
     # Attempt to open CSV file
     if "year" in request.args and "month" in request.args:
@@ -40,11 +47,13 @@ def ledger():
 
         return redirect(url_for("show_ledger", year=y, month=m))
         
-    return render_template('ledger.html')
+    return render_template('ledger.html', nav=nav)
 
 
 @app.route('/show_ledger', methods=['GET', 'POST'])
 def show_ledger():
+    nav = NavBar().render()
+
     y = ""
     m = ""
 
@@ -92,7 +101,14 @@ def show_ledger():
 
     df.set_index("Number", drop=False, inplace=True)
 
-    return render_template("ledger_render.html", Columns=df.columns, Data=df.values, year=y, month=m)
+    return render_template("ledger_render.html", nav=nav, Columns=df.columns, Data=df.values, year=y, month=m)
+
+
+@app.route('/add_ledger', methods=['GET', 'POST'])
+def add_ledger():
+    nav = NavBar().render()
+
+    return render_template('ledger_add.html', nav=nav)
 
 
 @app.route('/budget', methods=['GET'])

@@ -5,9 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/header.css">
     <title>Finances | Budget</title>
 </head>
 <body>
+    {{ nav|safe }}
     <div>
         <a href="/">Home</a>
     </div>
@@ -16,15 +18,19 @@
 
     <div>
         {% if year %}
-            <a href="/ledger">Back</a>
+            <a href="/ledgers">Back</a>
             <br>
             <br>
         {% endif %}
 
+        <form id="add-ledger" method="GET" action="/add_ledger">
+            <button>Add A New Ledger</button>
+        </form>
+
         <table>
             {% for i in Years %}
                 <tr><td>
-                    <form id="load-year" method="GET" action="/ledger">
+                    <form id="load-year" method="GET" action="/ledgers">
                         <input type="hidden" name="year" value="{{ i }}">
                         <button>{{ i }}</button>
                     </form>
@@ -32,7 +38,7 @@
             {% endfor %}
             {% for i in Months %}
                 <tr><td>
-                    <form id="load-month" method="GET" action="/ledger">
+                    <form id="load-month" method="GET" action="/ledgers">
                         <input type="hidden" name="year" value="{{ year }}">
                         <input type="hidden" name="month" value="{{ i }}">
                         <button>{{ i }}</button>
