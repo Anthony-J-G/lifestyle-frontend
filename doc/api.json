@@ -62,7 +62,7 @@
                 "description": "Returns html represnetation/render of a given saved ledger",
                 "responses": {
                     "200" : {
-                        "description": "HTML content of the home page",
+                        "description": "HTML content render of the ledger",
                         "content": {
                             "text/html": {
 

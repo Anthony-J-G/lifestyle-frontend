@@ -5,6 +5,8 @@ import json
 from importlib_metadata import method_cache
 import pandas as pd
 
+from src import ledger
+
 from src.components.header import NavBar
 
 
@@ -33,9 +35,8 @@ def index():
 """
     Ledger Routes
 """
-@app.route('/ledgers', methods=['GET', 'POST'])
+@app.route('/ledgers', methods=['GET'])
 def ledgers():
-
     # Create Components
     nav = NavBar().render()
 
@@ -53,6 +54,8 @@ def ledgers():
         m = request.args.get("month")
 
         return redirect(url_for("show_ledger", year=y, month=m))
+
+    # ledger.ledger_interface()
         
     return render_template('ledger.html', nav=nav)
 
