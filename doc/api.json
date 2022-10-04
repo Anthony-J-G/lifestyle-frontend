@@ -1,0 +1,41 @@
+{
+    "openapi":"3.1.0",
+    "info": {
+        "title": "",
+        "summary": "",
+        "description": "",
+        "termsOfService": "NONE",
+        "contact": {
+            "name": "Anthony J. Guarino",
+            "url": "",
+            "email": "anthonyjbasai@gmail.com"
+        },
+        "license": {
+
+        },
+        "version": "0.1.0"
+    },
+    "jsonSchemaDialect": "",
+    "servers": [
+
+    ],
+    "paths": {
+
+    },
+    "webhooks": {
+
+    },
+    "compnents": {
+
+    },
+    "security": [
+
+    ],
+    "tags": [
+
+    ],
+    "externalDocs": {
+
+    }
+
+}

@@ -5,7 +5,7 @@ import json
 from importlib_metadata import method_cache
 import pandas as pd
 
-from scripts.header import NavBar
+from src.components.header import NavBar
 
 
 LEDGER_COLS = ["Number", "Date", "Description", "Category", "Amount"]
@@ -20,7 +20,9 @@ with open("data/years.json") as f:
 app = Flask(__name__)
 
 
-
+"""
+    Root Route
+"""
 @app.route('/')
 def index():
     nav = NavBar().render()
@@ -28,8 +30,13 @@ def index():
     return render_template('index.html', nav=nav)
 
 
+"""
+    Ledger Routes
+"""
 @app.route('/ledgers', methods=['GET', 'POST'])
 def ledgers():
+
+    # Create Components
     nav = NavBar().render()
 
     # Ask client for the year to search for
@@ -50,7 +57,7 @@ def ledgers():
     return render_template('ledger.html', nav=nav)
 
 
-@app.route('/show_ledger', methods=['GET', 'POST'])
+@app.route('/ledgers/show_ledger', methods=['GET', 'POST'])
 def show_ledger():
     nav = NavBar().render()
 
@@ -104,13 +111,16 @@ def show_ledger():
     return render_template("ledger_render.html", nav=nav, Columns=df.columns, Data=df.values, year=y, month=m)
 
 
-@app.route('/add_ledger', methods=['GET', 'POST'])
+@app.route('/ledgers/add_ledger', methods=['GET', 'POST'])
 def add_ledger():
     nav = NavBar().render()
 
     return render_template('ledger_add.html', nav=nav)
 
 
+"""
+    Budgeting Routes
+"""
 @app.route('/budget', methods=['GET'])
 def budget():
     if len(request.args) == 0:
