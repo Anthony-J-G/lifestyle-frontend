@@ -25,9 +25,74 @@
 
     "paths": {
         "/": {
-            "get" {
-                "description": "Returns html that generates the home page of the application"
+            "get": {
+                "description": "Returns html that generates the home page of the application",
+                "responses": {
+                    "200" : {
+                        "description": "HTML content of the home page",
+                        "content": {
+                            "text/html": {
+
+                            }
+                        }
+                    }
+                }
             }
+        },
+
+        "/ledgers": {
+            "get": {
+                "description": "Returns html that shows an interface with all of the user's saved ledgers",
+                "responses": {
+                    "200" : {
+                        "description": "HTML content of the home page",
+                        "content": {
+                            "text/html": {
+
+                            }
+                        }
+                    }
+                }
+            },
+
+        },
+
+        "/ledgers/show_ledger": {
+            "get": {
+                "description": "Returns html represnetation/render of a given saved ledger",
+                "responses": {
+                    "200" : {
+                        "description": "HTML content of the home page",
+                        "content": {
+                            "text/html": {
+
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "year",
+                    "in": "path",
+                    "description": "Used to determine the year of the ledger that is rendered",
+                    "required": "true"
+                },
+                {
+                    "name": "month",
+                    "in": "path",
+                    "description": "Used to determine the month of the ledger that is rendered",
+                    "required": "true"
+                }
+            ]
+        },
+
+        "/ledgers/add_ledger": {
+
+        },
+
+        "/ledgers/edit_ledger": {
+
         }
     },
 
