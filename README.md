@@ -13,3 +13,7 @@ To Do List:
     - Restructure the app code so it is neat and organized <--- Goal for today
     - Make everything prettier
     - Figure out a good way for editing ledger entries
+
+
+What to do next:
+Goal for tomorrow is to continue moving 'add_ledger' functionality and making it POST method only.

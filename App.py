@@ -6,16 +6,9 @@ from src import ledger
 from src.components.header import NavBar
 
 
-LEDGER_COLS = ["Number", "Date", "Description", "Category", "Amount"]
-
-
-with open("data/months.json") as f:
-    MONTHS = json.load(f)
-
-with open("data/years.json") as f:
-    Years = json.load(f)
 
 app = Flask(__name__)
+
 
 
 """
@@ -46,19 +39,18 @@ def ledgers():
         return render_template('ledger.html', header=header)
 
     if case == 1:
-        return render_template('ledger.html', header=header, Years=Years, Months=[])
+        return render_template('ledger.html', header=header, Years=[2022], Months=[])
 
     if case == 2:
         return render_template('ledger.html', header=header)
 
-
     # Ask client for the year to search for
     if "year" not in request.args and "month" not in request.args:
-        return render_template('ledger.html', header=header, Years=Years, Months=[])
+        return render_template('ledger.html', header=header, Years=[2022], Months=[])
 
     # If given a year, attempt to ask client for month as well
     if "year" in request.args and "month" not in request.args:
-        return render_template('ledger.html', header=header, Years=[], Months=MONTHS, year=request.args.get("year"))
+        return render_template('ledger.html', header=header, Years=[], Months=[2022], year=request.args.get("year"))
 
     # Attempt to open CSV file
     if "year" in request.args and "month" in request.args:
@@ -71,16 +63,12 @@ def ledgers():
     return render_template('ledger.html', header=header)
 
 
-@app.route('/ledgers/show_ledger', methods=['GET', 'POST'])
+@app.route('/ledgers/show_ledger', methods=['GET'])
 def show_ledger():
     nav = NavBar().render()
 
     y = ""
     m = ""
-
-    if request.method == 'POST':
-        y = request.form['year']
-        m = request.form['month']
 
     if request.method == 'GET':
         y = request.args.get('year')
@@ -95,31 +83,6 @@ def show_ledger():
         errormsg = f"File '{csv}' not found in budgets, please try again"
         return redirect(url_for('index'), 404)
 
-        df = pd.DataFrame(columns=LEDGER_COLS)
-        out_df = pd.DataFrame(columns=LEDGER_COLS).set_index('Number')
-        out_df.to_csv(csv)
-
-    if request.method == 'POST':
-        print(request.form)
-        nm = len(df)
-        dt = request.form['trdt']
-        dc = request.form['desc']
-        ca = request.form['cate']
-        at = request.form['amnt']
-        dr = request.form['dirc']
-
-        try:
-            at = float(at)*int(dr)
-        except ValueError:
-            abort(404)
-        
-        row = pd.DataFrame([[nm, dt, dc, ca, at]], columns=LEDGER_COLS)
-        df = pd.concat([df, row])
-        df.set_index('Number').to_csv(csv)
-
-        return redirect(url_for('show_ledger', year=y, month=m)) # Redirect to self to prevent form resubmission
-
-
     df.set_index("Number", drop=False, inplace=True)
 
     return render_template("ledger_render.html", nav=nav, Columns=df.columns, Data=df.values, year=y, month=m)
@@ -128,12 +91,41 @@ def show_ledger():
 @app.route('/ledgers/add_ledger', methods=['POST'])
 def add_ledger():
 
-    params, case = ledger.make_new_ledger()
+    params, case = ledger.make_new_ledger(req=request)
 
-    if case == 0:
-        return redirect(url_for('show_ledger', year=y, month=m))
+    if case == -1: # Error Case
+        return redirect(
+            url_for('ledgers')
+        )
 
-    return str(request.form)
+    if case == 1:
+        return redirect(
+            url_for('show_ledger', year=params['y'], month=params['m'])
+        )
+
+    # Default Case
+    return redirect(
+        url_for('ledgers')
+    )
+
+@app.route('/ledgers/add_transaction', methods=['POST'])
+def add_transaction_to_ledger():
+    
+    params, case = ledger.add_transaction(req=request)
+
+    if case == -1: # Error Case
+        abort(404)
+
+    if case == 1:
+        return redirect(
+            url_for('show_ledger', year=params['y'], month=params['m'])
+        )
+
+    # Default Case
+    return redirect(
+        url_for('ledgers')
+    )
+    
 
 
 """

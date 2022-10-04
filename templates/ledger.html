@@ -24,20 +24,20 @@
         {% endif %}
 
         <form id="add-ledger" method="post" action="/ledgers/add_ledger">
-            <input type="month" name="month" required>
+            <input type="month" name="date" required>
             <input type="submit" value="Submit">
         </form>
         <br>
         <br>
-        <table>
-            <form id="load-year" method="GET" action="/ledgers"></form>
+        <table>    
             {% for i in Years %}
                 <tr><td>
-                    <input type="hidden" name="year" value="{{ i }}">
-                    <button>{{ i }}</button>     
+                    <form id="load-year" method="GET" action="/ledgers"></form>
+                        <input type="hidden" name="year" value="{{ i }}">
+                        <button>{{ i }}</button>     
+                    </form>
                 </td></tr>
             {% endfor %}
-            </form>
         </table>
         <table>
             <form id="load-month" method="GET" action="/ledgers"></form>
