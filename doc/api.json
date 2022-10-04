@@ -16,11 +16,19 @@
     "jsonSchemaDialect": "",
 
     "servers": [
+        {
+            "url": "/",
+            "description": "The default server connection used for indexing the application"
+        }
 
     ],
 
     "paths": {
-
+        "/": {
+            "get" {
+                "description": "Returns html that generates the home page of the application"
+            }
+        }
     },
 
     "webhooks": {
