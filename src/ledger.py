@@ -1,7 +1,20 @@
+# Builtin Modules
+import json
+
+
+# 3rd-Party Modules
+import pandas as pd
+
+
+# Custom Modules
 from src.components.header import NavBar
 
 
-def ledger_interface():
+def ledger_interface(req) -> int:
+
+    print(req.args)
+
+
 
     """
     # Create Components
@@ -22,6 +35,8 @@ def ledger_interface():
 
         return redirect(url_for("show_ledger", year=y, month=m))
     """
+
+    return 0
 
 
 def edit_ledger():

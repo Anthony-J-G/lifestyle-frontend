@@ -1,12 +1,8 @@
-from calendar import month
-from tkinter.tix import COLUMN
 from flask import Flask, render_template, redirect, url_for, request, abort
 import json
-from importlib_metadata import method_cache
 import pandas as pd
 
 from src import ledger
-
 from src.components.header import NavBar
 
 
@@ -37,16 +33,32 @@ def index():
 """
 @app.route('/ledgers', methods=['GET'])
 def ledgers():
-    # Create Components
-    nav = NavBar().render()
+
+    # Create Header Components
+    header = {
+        "nav" : NavBar().render()
+    }
+
+    # Run Route Functionality
+    case = ledger.ledger_interface(req=request)
+
+    if case == -1: # Default Case
+        return render_template('ledger.html', header=header)
+
+    if case == 1:
+        return render_template('ledger.html', header=header, Years=Years, Months=[])
+
+    if case == 2:
+        return render_template('ledger.html', header=header)
+
 
     # Ask client for the year to search for
     if "year" not in request.args and "month" not in request.args:
-        return render_template('ledger.html', nav=nav, Years=Years, Months=[])
+        return render_template('ledger.html', header=header, Years=Years, Months=[])
 
     # If given a year, attempt to ask client for month as well
     if "year" in request.args and "month" not in request.args:
-        return render_template('ledger.html', nav=nav, Years=[], Months=MONTHS, year=request.args.get("year"))
+        return render_template('ledger.html', header=header, Years=[], Months=MONTHS, year=request.args.get("year"))
 
     # Attempt to open CSV file
     if "year" in request.args and "month" in request.args:
@@ -55,9 +67,8 @@ def ledgers():
 
         return redirect(url_for("show_ledger", year=y, month=m))
 
-    # ledger.ledger_interface()
-        
-    return render_template('ledger.html', nav=nav)
+    
+    return render_template('ledger.html', header=header)
 
 
 @app.route('/ledgers/show_ledger', methods=['GET', 'POST'])
@@ -114,11 +125,15 @@ def show_ledger():
     return render_template("ledger_render.html", nav=nav, Columns=df.columns, Data=df.values, year=y, month=m)
 
 
-@app.route('/ledgers/add_ledger', methods=['GET', 'POST'])
+@app.route('/ledgers/add_ledger', methods=['POST'])
 def add_ledger():
-    nav = NavBar().render()
 
-    return render_template('ledger_add.html', nav=nav)
+    params, case = ledger.make_new_ledger()
+
+    if case == 0:
+        return redirect(url_for('show_ledger', year=y, month=m))
+
+    return str(request.form)
 
 
 """

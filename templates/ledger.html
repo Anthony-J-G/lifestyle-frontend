@@ -9,7 +9,7 @@
     <title>Finances | Budget</title>
 </head>
 <body>
-    {{ nav|safe }}
+    {{ header['nav']|safe }}
     <div>
         <a href="/">Home</a>
     </div>
@@ -23,28 +23,32 @@
             <br>
         {% endif %}
 
-        <form id="add-ledger" method="GET" action="/ledgers/add_ledger">
-            <button>Add A New Ledger</button>
+        <form id="add-ledger" method="post" action="/ledgers/add_ledger">
+            <input type="month" name="month" required>
+            <input type="submit" value="Submit">
         </form>
-
+        <br>
+        <br>
         <table>
+            <form id="load-year" method="GET" action="/ledgers"></form>
             {% for i in Years %}
                 <tr><td>
-                    <form id="load-year" method="GET" action="/ledgers">
-                        <input type="hidden" name="year" value="{{ i }}">
-                        <button>{{ i }}</button>
-                    </form>
+                    <input type="hidden" name="year" value="{{ i }}">
+                    <button>{{ i }}</button>     
                 </td></tr>
             {% endfor %}
-            {% for i in Months %}
-                <tr><td>
-                    <form id="load-month" method="GET" action="/ledgers">
+            </form>
+        </table>
+        <table>
+            <form id="load-month" method="GET" action="/ledgers"></form>
+                {% for i in Months %}
+                    <tr><td>
                         <input type="hidden" name="year" value="{{ year }}">
                         <input type="hidden" name="month" value="{{ i }}">
                         <button>{{ i }}</button>
-                    </form>
-                </td></tr>
-            {% endfor %}
+                    </td></tr>
+                {% endfor %}
+            </form>
         </table>
         
     </div>
