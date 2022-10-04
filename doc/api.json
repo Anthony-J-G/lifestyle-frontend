@@ -1,39 +1,44 @@
 {
     "openapi":"3.1.0",
     "info": {
-        "title": "",
-        "summary": "",
-        "description": "",
-        "termsOfService": "NONE",
+        "title": "finance-app",
+        "summary": "A basic finance application",
+        "description": "This is an combo app (frontend/backend) designed to allow for users to track their spending and finances. Part of the 'Lifestyle' development project, used as basic framework to be linked as an additional microservice at a later date.",
+        "termsOfService": "https://sites.google.com/view/the-lifestyle-project-tos/home",
         "contact": {
             "name": "Anthony J. Guarino",
-            "url": "",
-            "email": "anthonyjbasai@gmail.com"
-        },
-        "license": {
-
+            "url": "https://github.com/Anthony-J-G/finance-app",
+            "email": "anthonyjamesguarino@gmail.com"
         },
         "version": "0.1.0"
     },
+
     "jsonSchemaDialect": "",
+
     "servers": [
 
     ],
+
     "paths": {
 
     },
+
     "webhooks": {
 
     },
+
     "compnents": {
 
     },
+
     "security": [
 
     ],
+
     "tags": [
 
     ],
+
     "externalDocs": {
 
     }
