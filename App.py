@@ -1,3 +1,4 @@
+import re
 from flask import Flask, render_template, redirect, url_for, request, abort
 import json
 import pandas as pd
@@ -33,7 +34,7 @@ def ledgers():
     }
 
     # Run Route Functionality
-    case = ledger.ledger_interface(req=request)
+    case = ledger.view_all_ledgers(req=request)
 
     if case == -1: # Default Case
         return render_template('ledger.html', header=header)
@@ -67,6 +68,11 @@ def ledgers():
 def show_ledger():
     nav = NavBar().render()
 
+    params, case = ledger.render_ledger(req=request)
+
+    if case == -1:
+        return redirect(url_for('ledgers', err=params['err']), 404)
+
     y = ""
     m = ""
 
@@ -81,7 +87,7 @@ def show_ledger():
 
     except FileNotFoundError:
         errormsg = f"File '{csv}' not found in budgets, please try again"
-        return redirect(url_for('index'), 404)
+        return redirect(url_for('ledgers'), 404)
 
     df.set_index("Number", drop=False, inplace=True)
 
@@ -108,6 +114,7 @@ def add_ledger():
         url_for('ledgers')
     )
 
+
 @app.route('/ledgers/add_transaction', methods=['POST'])
 def add_transaction_to_ledger():
     
@@ -115,11 +122,6 @@ def add_transaction_to_ledger():
 
     if case == -1: # Error Case
         abort(404)
-
-    if case == 1:
-        return redirect(
-            url_for('show_ledger', year=params['y'], month=params['m'])
-        )
 
     # Default Case
     return redirect(

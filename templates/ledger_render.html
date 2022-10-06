@@ -11,7 +11,6 @@
     <div>
         <a href="/">Home</a>
     </div>
-
     <br>
 
     <div>
@@ -19,7 +18,7 @@
         <br>
         <br>
 
-        <form action="/show_ledger" method="post">
+        <form action="/ledgers/add_transaction" method="post">
             <input type="hidden" name="year"  value="{{ year }}">
             <input type="hidden" name="month" value="{{ month }}">
 
@@ -44,6 +43,7 @@
         </form>
         <br>
         <br>
+        
         <table>
             <tr>
                 {% for i in Columns %}

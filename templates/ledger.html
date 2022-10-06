@@ -23,18 +23,20 @@
             <br>
         {% endif %}
 
+        <h2>Add/Find Ledger:</h2>
         <form id="add-ledger" method="post" action="/ledgers/add_ledger">
             <input type="month" name="date" required>
             <input type="submit" value="Submit">
         </form>
         <br>
         <br>
+        <h2>List of Ledgers:</h2>
         <table>    
             {% for i in Years %}
                 <tr><td>
                     <form id="load-year" method="GET" action="/ledgers"></form>
                         <input type="hidden" name="year" value="{{ i }}">
-                        <button>{{ i }}</button>     
+                        <button>{{ i }}</button>   
                     </form>
                 </td></tr>
             {% endfor %}
