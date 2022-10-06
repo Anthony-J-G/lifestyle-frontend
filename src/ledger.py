@@ -81,7 +81,7 @@ def render_ledger(req):
 
     df.set_index("Number", drop=False, inplace=True)
 
-    return {}, 0
+    return {'cols': df.columns, 'data': df.values, 'y': y, 'm': m}, 0
 
 
 # Good probably?

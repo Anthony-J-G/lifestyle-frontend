@@ -65,33 +65,25 @@ def ledgers():
 
 
 @app.route('/ledgers/show_ledger', methods=['GET'])
-def show_ledger():
-    nav = NavBar().render()
+def show_ledger(): 
+    # Create Header Components
+    header = {
+        "nav" : NavBar().render()
+    }
 
     params, case = ledger.render_ledger(req=request)
 
     if case == -1:
         return redirect(url_for('ledgers', err=params['err']), 404)
 
-    y = ""
-    m = ""
-
-    if request.method == 'GET':
-        y = request.args.get('year')
-        m = request.args.get('month')
-
-    csv = f"data/private/ledgers/{y}_{m}.csv" # Parse CSV file from args
-    df = None
-    try:
-        df = pd.read_csv(csv)
-
-    except FileNotFoundError:
-        errormsg = f"File '{csv}' not found in budgets, please try again"
-        return redirect(url_for('ledgers'), 404)
-
-    df.set_index("Number", drop=False, inplace=True)
-
-    return render_template("ledger_render.html", nav=nav, Columns=df.columns, Data=df.values, year=y, month=m)
+    return render_template(
+        "ledger_render.html",
+        header=header,
+        Columns=params['cols'],
+        Data=params['data'],
+        year=params['y'],
+        month=params['m']
+    )
 
 
 @app.route('/ledgers/add_ledger', methods=['POST'])
