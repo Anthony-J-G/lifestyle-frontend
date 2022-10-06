@@ -120,30 +120,32 @@ def make_new_ledger(req):
 
 # TODO: Super broken, needs review tomorrow
 def add_transaction(req):
+    print()
+    try:
+        nm = len(df)
+        dt = req.form['trdt']
+        dc = req.form['desc']
+        ca = req.form['cate']
+        at = req.form['amnt']
+        dr = req.form['dirc']
 
-    return {}, 0
+    except BadRequestKeyError:
+        pass
 
     params, is_valid = year_month_is_valid(d)
     if not is_valid:
         return {"err": params["err"]}, -1
     y, m = params['y'], params['m']
-
     csv = f"data/private/ledgers/{y}_{m}.csv" # Parse CSV file from args
     
-    nm = len(df)
-    dt = req.form['trdt']
-    dc = req.form['desc']
-    ca = req.form['cate']
-    at = req.form['amnt']
-    dr = req.form['dirc']
-
     try:
         at = float(at)*int(dr)
     except ValueError:
-        return {}, -1
+        errmsg = ''
+        return {'err': errmsg}, -1
     
     row = pd.DataFrame([[nm, dt, dc, ca, at]], columns=LEDGER_COLS)
     df = pd.concat([df, row])
     df.set_index('Number').to_csv(csv)
 
-    return {}, 1
+    return {'y':y, 'm':m}, 1

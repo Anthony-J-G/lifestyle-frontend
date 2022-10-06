@@ -5,6 +5,7 @@ import pandas as pd
 
 from src import ledger
 from src.components.header import NavBar
+from src.components.transparent_div import TransparentDiv
 
 
 
@@ -115,6 +116,11 @@ def add_transaction_to_ledger():
     if case == -1: # Error Case
         abort(404)
 
+    if case == 1:
+        return redirect(
+            url_for('show_ledger', year=params["y"], month=params["m"])
+        )
+
     # Default Case
     return redirect(
         url_for('ledgers')
@@ -137,6 +143,19 @@ def budget():
 def greet(name):
     return f"Hello, {name}"
 
+@app.route('/test')
+def test_route():
+
+
+    nav = NavBar().render()
+    l = TransparentDiv().render()
+
+    header = {
+        "nav": nav,
+        "tdiv": l
+    }
+
+    return render_template("css_test.html", header=header)
 
 
 if __name__ == '__main__':
