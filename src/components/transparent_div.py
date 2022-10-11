@@ -10,6 +10,7 @@ class TransparentDiv:
         
         return (
             """
-            <div>:)))</div>
+            <div class='transparent-bg'>:)))</div>
+
             """
         )

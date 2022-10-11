@@ -17,48 +17,57 @@
         <br>
         <br>
 
-        <form action="/ledgers/add_transaction" method="post">
-            <input type="hidden" name="year"  value="{{ year }}">
-            <input type="hidden" name="month" value="{{ month }}">
+    
+        <div class="ledger-main">
 
-            <label for="trdt">Date:</label>
-            <input type="date" name="trdt" autocomplete="off" required>
+            <div class="transaction-block">
+                <form action="/ledgers/add_transaction" method="post">
+                    <input type="hidden" name="year"  value="{{ year }}">
+                    <input type="hidden" name="month" value="{{ month }}">
+                    <br>
+                    <br>
+                    <label for="trdt">Date:</label>
+                    <input type="date" name="trdt" autocomplete="off" required>
+                    <br>
+                    <br>
+                    <label for="desc">Description:</label>
+                    <input type="text" name="desc" autocomplete="off" maxlen=32 required>
+                    <br>
+                    <br>
+                    <label for="category">Category:</label>
+                    <input type="text" name="cate" autocomplete="off" maxlen=16 required>
+                    <br>
+                    <br>
+                    <label for="amnt">Amount:</label>
+                    <input type="number" name="amnt" autocomplete="off" step=0.001 maxlen=16 required>
+                    <br>
+                    <br>
+                    <input type="radio" id="debit" name="dirc" value="1" required>
+                    <label for="debit">Debit</label>
+                    <input type="radio" id="credit" name="dirc" value="-1" required>
+                    <label for="credit">Credit</label><br>
+                    <br>
+                    <input type="submit" value="Submit">
+                </form>
+            </div>
 
-            <label for="desc">Description:</label>
-            <input type="text" name="desc" autocomplete="off" maxlen=32 required>
-
-            <label for="category">Category:</label>
-            <input type="text" name="cate" autocomplete="off" maxlen=16 required>
-
-            <label for="amnt">Amount:</label>
-            <input type="number" name="amnt" autocomplete="off" step=0.001 maxlen=16 required>
-        
-            <input type="radio" id="debit" name="dirc" value="1" required>
-            <label for="debit">Debit</label>
-            <input type="radio" id="credit" name="dirc" value="-1" required>
-            <label for="credit">Credit</label><br>
-            <br>
-            <input type="submit" value="Submit">
-        </form>
-        <br>
-        <br>
-        
-        <table>
-            <tr>
-                {% for i in Columns %}
-                    <th>
-                        {{ i }}
-                    </th>
-                {% endfor %}
-            </tr>
-            {% for i in Data %}
+            <table class="ledger-render-tbl">
                 <tr>
-                    {% for j in i %}
-                        <td>{{ j }}</td>
+                    {% for i in Columns %}
+                        <th>
+                            {{ i }}
+                        </th>
                     {% endfor %}
                 </tr>
-            {% endfor %}
-        </table>
+                {% for i in Data %}
+                    <tr>
+                        {% for j in i %}
+                            <td>{{ j }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
         
     </div>
     

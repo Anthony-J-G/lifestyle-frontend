@@ -3,7 +3,7 @@ from flask import Flask, render_template, redirect, url_for, request, abort
 import json
 import pandas as pd
 
-from src import ledger
+from src.ledger import LedgerAPI
 from src.components.header import NavBar
 from src.components.transparent_div import TransparentDiv
 
@@ -160,4 +160,7 @@ def test_route():
 
 if __name__ == '__main__':
     app.debug = True
+
+    app.add_url_rule('/users/', view_func=LedgerAPI.as_view('users'))
+
     app.run()

@@ -2,14 +2,28 @@
 import json
 import datetime
 
+
 # 3rd-Party Modules
 import pandas as pd
+from flask import render_template
+from flask.views import MethodView
 from werkzeug.exceptions import BadRequestKeyError
 
 
 # Custom Modules
 from src.components.header import NavBar
 from src.constants import LEDGER_COLS, MONTHS
+
+
+
+class LedgerAPI(MethodView):
+
+    def get(self):
+        return render_template('css_test.html')
+
+    def post(self):
+        pass
+
 
 
 def year_month_is_valid(d):
@@ -120,7 +134,8 @@ def make_new_ledger(req):
 
 # TODO: Super broken, needs review tomorrow
 def add_transaction(req):
-    print()
+
+    df = None
     try:
         nm = len(df)
         dt = req.form['trdt']
