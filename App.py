@@ -1,26 +1,21 @@
-from calendar import month
-from tkinter.tix import COLUMN
+import re
 from flask import Flask, render_template, redirect, url_for, request, abort
 import json
-from importlib_metadata import method_cache
 import pandas as pd
 
-from scripts.header import NavBar
+from src.ledger import LedgerAPI
+from src.components.header import NavBar
+from src.components.transparent_div import TransparentDiv
 
 
-LEDGER_COLS = ["Number", "Date", "Description", "Category", "Amount"]
-
-
-with open("data/months.json") as f:
-    MONTHS = json.load(f)
-
-with open("data/years.json") as f:
-    Years = json.load(f)
 
 app = Flask(__name__)
 
 
 
+"""
+    Root Route
+"""
 @app.route('/')
 def index():
     nav = NavBar().render()
@@ -28,17 +23,36 @@ def index():
     return render_template('index.html', nav=nav)
 
 
-@app.route('/ledgers', methods=['GET', 'POST'])
+"""
+    Ledger Routes
+"""
+@app.route('/ledgers', methods=['GET'])
 def ledgers():
-    nav = NavBar().render()
+
+    # Create Header Components
+    header = {
+        "nav" : NavBar().render()
+    }
+
+    # Run Route Functionality
+    case = ledger.view_all_ledgers(req=request)
+
+    if case == -1: # Default Case
+        return render_template('ledger.html', header=header)
+
+    if case == 1:
+        return render_template('ledger.html', header=header, Years=[2022], Months=[])
+
+    if case == 2:
+        return render_template('ledger.html', header=header)
 
     # Ask client for the year to search for
     if "year" not in request.args and "month" not in request.args:
-        return render_template('ledger.html', nav=nav, Years=Years, Months=[])
+        return render_template('ledger.html', header=header, Years=[2022], Months=[])
 
     # If given a year, attempt to ask client for month as well
     if "year" in request.args and "month" not in request.args:
-        return render_template('ledger.html', nav=nav, Years=[], Months=MONTHS, year=request.args.get("year"))
+        return render_template('ledger.html', header=header, Years=[], Months=[2022], year=request.args.get("year"))
 
     # Attempt to open CSV file
     if "year" in request.args and "month" in request.args:
@@ -46,71 +60,77 @@ def ledgers():
         m = request.args.get("month")
 
         return redirect(url_for("show_ledger", year=y, month=m))
-        
-    return render_template('ledger.html', nav=nav)
+
+    
+    return render_template('ledger.html', header=header)
 
 
-@app.route('/show_ledger', methods=['GET', 'POST'])
-def show_ledger():
-    nav = NavBar().render()
+@app.route('/ledgers/show_ledger', methods=['GET'])
+def show_ledger(): 
+    # Create Header Components
+    header = {
+        "nav" : NavBar().render()
+    }
 
-    y = ""
-    m = ""
+    params, case = ledger.render_ledger(req=request)
 
-    if request.method == 'POST':
-        y = request.form['year']
-        m = request.form['month']
+    if case == -1:
+        return redirect(url_for('ledgers', err=params['err']), 404)
 
-    if request.method == 'GET':
-        y = request.args.get('year')
-        m = request.args.get('month')
-
-    csv = f"data/private/ledgers/{y}_{m}.csv" # Parse CSV file from args
-    df = None
-    try:
-        df = pd.read_csv(csv)
-
-    except FileNotFoundError:
-        errormsg = f"File '{csv}' not found in budgets, please try again"
-        return redirect(url_for('index'), 404)
-
-        df = pd.DataFrame(columns=LEDGER_COLS)
-        out_df = pd.DataFrame(columns=LEDGER_COLS).set_index('Number')
-        out_df.to_csv(csv)
-
-    if request.method == 'POST':
-        print(request.form)
-        nm = len(df)
-        dt = request.form['trdt']
-        dc = request.form['desc']
-        ca = request.form['cate']
-        at = request.form['amnt']
-        dr = request.form['dirc']
-
-        try:
-            at = float(at)*int(dr)
-        except ValueError:
-            abort(404)
-        
-        row = pd.DataFrame([[nm, dt, dc, ca, at]], columns=LEDGER_COLS)
-        df = pd.concat([df, row])
-        df.set_index('Number').to_csv(csv)
-
-        return redirect(url_for('show_ledger', year=y, month=m)) # Redirect to self to prevent form resubmission
+    return render_template(
+        "ledger_render.html",
+        header=header,
+        Columns=params['cols'],
+        Data=params['data'],
+        year=params['y'],
+        month=params['m']
+    )
 
 
-    df.set_index("Number", drop=False, inplace=True)
-
-    return render_template("ledger_render.html", nav=nav, Columns=df.columns, Data=df.values, year=y, month=m)
-
-
-@app.route('/add_ledger', methods=['GET', 'POST'])
+@app.route('/ledgers/add_ledger', methods=['POST'])
 def add_ledger():
-    nav = NavBar().render()
 
-    return render_template('ledger_add.html', nav=nav)
+    params, case = ledger.make_new_ledger(req=request)
+
+    if case == -1: # Error Case
+        return redirect(
+            url_for('ledgers')
+        )
+
+    if case == 1:
+        return redirect(
+            url_for('show_ledger', year=params['y'], month=params['m'])
+        )
+
+    # Default Case
+    return redirect(
+        url_for('ledgers')
+    )
 
 
+@app.route('/ledgers/add_transaction', methods=['POST'])
+def add_transaction_to_ledger():
+    
+    params, case = ledger.add_transaction(req=request)
+
+    if case == -1: # Error Case
+        abort(404)
+
+    if case == 1:
+        return redirect(
+            url_for('show_ledger', year=params["y"], month=params["m"])
+        )
+
+    # Default Case
+    return redirect(
+        url_for('ledgers')
+    )
+    
+
+
+"""
+    Budgeting Routes
+"""
 @app.route('/budget', methods=['GET'])
 def budget():
     if len(request.args) == 0:
@@ -123,8 +143,24 @@ def budget():
 def greet(name):
     return f"Hello, {name}"
 
+@app.route('/test')
+def test_route():
+
+
+    nav = NavBar().render()
+    l = TransparentDiv().render()
+
+    header = {
+        "nav": nav,
+        "tdiv": l
+    }
+
+    return render_template("css_test.html", header=header)
 
 
 if __name__ == '__main__':
     app.debug = True
+
+    app.add_url_rule('/users/', view_func=LedgerAPI.as_view('users'))
+
     app.run()

@@ -1,0 +1,119 @@
+{
+    "openapi":"3.1.0",
+    "info": {
+        "title": "finance-app",
+        "summary": "A basic finance application",
+        "description": "This is an combo app (frontend/backend) designed to allow for users to track their spending and finances. Part of the 'Lifestyle' development project, used as basic framework to be linked as an additional microservice at a later date.",
+        "termsOfService": "https://sites.google.com/view/the-lifestyle-project-tos/home",
+        "contact": {
+            "name": "Anthony J. Guarino",
+            "url": "https://github.com/Anthony-J-G/finance-app",
+            "email": "anthonyjamesguarino@gmail.com"
+        },
+        "version": "0.1.0"
+    },
+
+    "jsonSchemaDialect": "",
+
+    "servers": [
+        {
+            "url": "/",
+            "description": "The default server connection used for indexing the application"
+        }
+
+    ],
+
+    "paths": {
+        "/": {
+            "get": {
+                "description": "Returns html that generates the home page of the application",
+                "responses": {
+                    "200" : {
+                        "description": "HTML content of the home page",
+                        "content": {
+                            "text/html": {
+
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/ledgers": {
+            "get": {
+                "description": "Returns html that shows an interface with all of the user's saved ledgers",
+                "responses": {
+                    "200" : {
+                        "description": "HTML content of the home page",
+                        "content": {
+                            "text/html": {
+
+                            }
+                        }
+                    }
+                }
+            },
+
+        },
+
+        "/ledgers/show_ledger": {
+            "get": {
+                "description": "Returns html represnetation/render of a given saved ledger",
+                "responses": {
+                    "200" : {
+                        "description": "HTML content render of the ledger",
+                        "content": {
+                            "text/html": {
+
+                            }
+                        }
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "year",
+                    "in": "path",
+                    "description": "Used to determine the year of the ledger that is rendered",
+                    "required": "true"
+                },
+                {
+                    "name": "month",
+                    "in": "path",
+                    "description": "Used to determine the month of the ledger that is rendered",
+                    "required": "true"
+                }
+            ]
+        },
+
+        "/ledgers/add_ledger": {
+
+        },
+
+        "/ledgers/edit_ledger": {
+
+        }
+    },
+
+    "webhooks": {
+
+    },
+
+    "compnents": {
+
+    },
+
+    "security": [
+
+    ],
+
+    "tags": [
+
+    ],
+
+    "externalDocs": {
+
+    }
+
+}

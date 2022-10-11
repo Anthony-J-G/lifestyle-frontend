@@ -5,8 +5,9 @@ class NavBar:
         self.style = "header.css"
 
         self.links = {
-            "Budgeting":"/",
-            "Ledgers":"/ledgers"
+            "Home":         "/",
+            "Budgeting":    "/",
+            "Ledgers":      "/ledgers"
         }
 
 
